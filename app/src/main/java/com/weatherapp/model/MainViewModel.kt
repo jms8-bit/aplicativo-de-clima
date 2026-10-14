@@ -6,13 +6,11 @@ import com.google.android.gms.maps.model.LatLng
 
 class MainViewModel : ViewModel() {
     private val _cities = getCities().toMutableStateList()
-    val cities
+    val cities: List<City>
         get() = _cities.toList()
+
     fun remove(city: City) {
         _cities.remove(city)
-    }
-    fun add(name: String) {
-        _cities.add(City(name = name))
     }
 
     fun add(name: String, location: LatLng? = null) {
