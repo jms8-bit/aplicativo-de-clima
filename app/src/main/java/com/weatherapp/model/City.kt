@@ -1,7 +1,9 @@
 package com.weatherapp.model
 
-data class City (
-    val name : String,
+import com.google.android.gms.maps.model.LatLng
+
+data class City(
+    val name: String,
     val weather: String? = null,
-    val location: String? = null
+    val location: LatLng? = null
 )

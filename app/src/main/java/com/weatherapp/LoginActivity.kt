@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.model.City
 import com.weatherapp.ui.theme.WeatherAppTheme
+import androidx.compose.foundation.layout.Arrangement
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +62,9 @@ fun LoginPage(modifier: Modifier = Modifier) {
     var password by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
     Column(
-        modifier = modifier.fillMaxWidth(fraction = 0.9f)
+        modifier = modifier.fillMaxWidth(fraction = 0.9f).padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Bem-vindo/a!",
@@ -70,13 +73,13 @@ fun LoginPage(modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = email,
             label = { Text(text = "Digite seu e-mail") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { email = it }
         )
         OutlinedTextField(
             value = password,
             label = { Text(text = "Digite sua senha") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { password = it },
             visualTransformation = PasswordVisualTransformation()
         )

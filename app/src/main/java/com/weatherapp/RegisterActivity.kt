@@ -27,6 +27,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.ui.theme.WeatherAppTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.Alignment
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +53,9 @@ fun RegisterPage(modifier: Modifier = Modifier) {
     var passwordRepeated by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
     Column(
-        modifier = modifier.fillMaxWidth(fraction = 0.9f)
+        modifier = modifier.fillMaxWidth(fraction = 0.9f).padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Bem-vindo/a!",
@@ -60,26 +64,26 @@ fun RegisterPage(modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = nome,
             label = { Text(text = "Digite seu nome") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { nome = it }
         )
         OutlinedTextField(
             value = email,
             label = { Text(text = "Digite seu e-mail") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { email = it }
         )
         OutlinedTextField(
             value = password,
             label = { Text(text = "Digite sua senha") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { password = it },
             visualTransformation = PasswordVisualTransformation()
         )
         OutlinedTextField(
             value = passwordRepeated,
             label = { Text(text = "Digite sua senha de novo") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(0.9f),
             onValueChange = { passwordRepeated = it },
             visualTransformation = PasswordVisualTransformation()
         )
@@ -93,7 +97,7 @@ fun RegisterPage(modifier: Modifier = Modifier) {
             },
                 enabled = nome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && password.equals(passwordRepeated)
             ) {
-                Text("Login")
+                Text("Registrar")
             }
             Button(
                 onClick = { nome = ""; email = ""; password = ""; passwordRepeated = "" }
