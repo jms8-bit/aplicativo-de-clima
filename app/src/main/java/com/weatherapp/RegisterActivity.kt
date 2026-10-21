@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
@@ -29,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,11 +92,15 @@ fun RegisterPage(modifier: Modifier = Modifier) {
         )
         Row(modifier = modifier.padding(12.dp).fillMaxWidth()) {
             Button( onClick = {
-                activity.startActivity(
-                    Intent(activity, MainActivity::class.java).setFlags(
-                        FLAG_ACTIVITY_SINGLE_TOP
-                    )
-                )
+                Firebase.auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(activity) { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
+                            activity.finish()
+                        } else {
+                            Toast.makeText(activity,"Registro FALHOU!", Toast.LENGTH_LONG).show()
+                        }
+                    }
             },
                 enabled = nome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && password.equals(passwordRepeated)
             ) {
