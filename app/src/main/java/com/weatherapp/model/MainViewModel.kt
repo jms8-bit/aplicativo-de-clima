@@ -14,6 +14,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import com.weatherapp.api.toWeather
+import com.weatherapp.api.toForecast
 
 class MainViewModel(
     private val db: FBDatabase,
@@ -76,6 +77,26 @@ class MainViewModel(
         loadWeather(name)
         Weather.LOADING
     }
+
+    private val _forecast = mutableStateMapOf<String, List<Forecast>?>()
+
+    fun forecast(name: String) = _forecast.getOrPut(name) {
+        loadForecast(name)
+        emptyList()
+    }
+
+    private fun loadForecast(name: String) {
+        service.getForecast(name) { apiForecast ->
+            apiForecast?.let {
+                _forecast[name] = it.toForecast()
+            }
+        }
+    }
+
+    private var _city = mutableStateOf<String?>(null)
+    var city: String?
+        get() = _city.value
+        set(tmp) { _city.value = tmp }
 
     private fun loadWeather(name: String) {
         service.getWeather(name) { apiWeather ->
