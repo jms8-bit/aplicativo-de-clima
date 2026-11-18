@@ -43,6 +43,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.weatherapp.db.fb.FBDatabase
 import com.weatherapp.model.MainViewModelFactory
+import com.weatherapp.api.WeatherService
+import com.weatherapp.ui.CityDialogViewModelFactory
+import com.weatherapp.ui.CityDialogViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -56,15 +60,23 @@ class MainActivity : ComponentActivity() {
             val launcher = rememberLauncherForActivityResult(contract =
                 ActivityResultContracts.RequestPermission(), onResult = {} )
             val fbDB = remember { FBDatabase() }
-            val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(fbDB))
+            val weatherService = remember { WeatherService() }
+            val viewModel: MainViewModel = viewModel(
+                factory = MainViewModelFactory(fbDB, weatherService)
+            )
+            val cityDialogVM: CityDialogViewModel = viewModel(
+                factory = CityDialogViewModelFactory(weatherService)
+            )
             var showDialog by remember { mutableStateOf(false) }
             WeatherAppTheme {
                 if (showDialog) CityDialog(
                     onDismiss = { showDialog = false },
                     onConfirm = { city ->
-                        if (city.isNotBlank()) viewModel.add(city)
+                        if (city.isNotBlank()) viewModel.addCity(city)
                         showDialog = false
-                    })
+                    },
+                    viewModel = cityDialogVM
+                )
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -92,7 +104,10 @@ class MainActivity : ComponentActivity() {
                     },
                     floatingActionButton = {
                         if (showButton) {
-                            FloatingActionButton(onClick = { showDialog = true }) {
+                            FloatingActionButton(onClick = {
+                                cityDialogVM.query = ""
+                                showDialog = true
+                            }) {
                                 Icon(Icons.Default.Add, contentDescription = "Adicionar")
                             }
                         }

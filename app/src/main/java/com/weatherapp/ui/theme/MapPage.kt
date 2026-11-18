@@ -41,11 +41,7 @@ fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         cameraPositionState = camPosState,
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(myLocationButtonEnabled = true),
-        onMapClick = {
-            val lat = "%.2f".format(it.latitude)
-            val lng = "%.2f".format(it.longitude)
-            viewModel.add("Cidade@$lat:$lng", location = it)
-        }
+        onMapClick = { location -> viewModel.addCity(location) }
     ) {
         viewModel.cities.forEach {
             if (it.location != null) {
