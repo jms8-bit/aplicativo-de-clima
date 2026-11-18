@@ -10,6 +10,10 @@ import com.weatherapp.db.fb.FBCity
 import com.weatherapp.db.fb.FBDatabase
 import com.weatherapp.db.fb.FBUser
 import com.weatherapp.db.fb.toFBCity
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import com.weatherapp.api.toWeather
 
 class MainViewModel(
     private val db: FBDatabase,
@@ -19,9 +23,11 @@ class MainViewModel(
     private val _user = mutableStateOf<User?>(null)
     val user: User?
         get() = _user.value
-    private val _cities = mutableStateListOf<City>()
-    val cities: List<City>
-        get() = _cities.toList()
+    private val _cities = mutableStateMapOf<String, City>()
+    val cities: List<City> by derivedStateOf {
+        _cities.values.toList().sortedBy { it.name }
+    }
+    private val _weather = mutableStateMapOf<String, Weather>()
 
     init {
         db.setListener(this)
@@ -54,13 +60,29 @@ class MainViewModel(
     override fun onUserSignOut() { }
 
     override fun onCityAdded(city: FBCity) {
-        _cities.add(city.toCity())
+        _cities[city.name!!] = city.toCity()
     }
 
-    override fun onCityUpdated(city: FBCity) { }
+    override fun onCityUpdated(city: FBCity) {
+        _cities.remove(city.name)
+        _cities[city.name!!] = city.toCity()
+    }
 
     override fun onCityRemoved(city: FBCity) {
-        _cities.removeIf { it.name == city.name }
+        _cities.remove(city.name)
+    }
+
+    fun weather(name: String) = _weather.getOrPut(name) {
+        loadWeather(name)
+        Weather.LOADING
+    }
+
+    private fun loadWeather(name: String) {
+        service.getWeather(name) { apiWeather ->
+            apiWeather?.let {
+                _weather[name] = it.toWeather()
+            }
+        }
     }
 }
 
