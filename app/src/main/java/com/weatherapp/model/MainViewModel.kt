@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import com.weatherapp.api.toWeather
 import com.weatherapp.api.toForecast
+import com.weatherapp.ui.nav.Route
 
 class MainViewModel(
     private val db: FBDatabase,
@@ -29,6 +30,11 @@ class MainViewModel(
         _cities.values.toList().sortedBy { it.name }
     }
     private val _weather = mutableStateMapOf<String, Weather>()
+
+    private var _page = mutableStateOf<Route>(Route.Home)
+    var page: Route
+        get() = _page.value
+        set(tmp) { _page.value = tmp }
 
     init {
         db.setListener(this)

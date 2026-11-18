@@ -37,6 +37,7 @@ import com.weatherapp.model.City
 import com.weatherapp.model.MainViewModel
 import com.weatherapp.ui.theme.CityItem
 import com.weatherapp.model.Weather
+import com.weatherapp.ui.nav.Route
 
 @Composable
 fun ListPage(modifier: Modifier = Modifier,
@@ -54,11 +55,14 @@ fun ListPage(modifier: Modifier = Modifier,
                 city = city,
                 weather = viewModel.weather(city.name),
                 onClose = {
-                viewModel.remove(city)
-                Toast.makeText(activity, "removido: ${city.name}", Toast.LENGTH_SHORT).show()
-            }, onClick = {
-                Toast.makeText(activity, "clicou em: ${city.name}", Toast.LENGTH_SHORT).show()
-            })
+                    viewModel.remove(city)
+                    Toast.makeText(activity, "removido: ${city.name}", Toast.LENGTH_SHORT).show()
+                },
+                onClick = {
+                    viewModel.city = city.name
+                    viewModel.page = Route.Home
+                }
+            )
         }
     }
 }
